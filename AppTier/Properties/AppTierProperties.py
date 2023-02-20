@@ -5,9 +5,12 @@ class AppTierProperties:
     REQUEST_S3 = "openstack-request"
     RESPONSE_S3 = "openstack-response"
 
+    AWS_ACCESS_KEY = "AKIARJJGXP3Y42GXDNV3"
+    AWS_SECRET_KEY = "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"
+
     @property
     def aws_credentials(self):
         return {
-            "access_key": "AKIA3M3MWZLDWSZAKT4J",
-            "secret_key": "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"
+            "aws_access_key_id": self.AWS_ACCESS_KEY,
+            "aws_secret_access_key": self.AWS_SECRET_KEY
         }
