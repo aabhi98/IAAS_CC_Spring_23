@@ -21,11 +21,11 @@ class ImageClassifier:
         loop = True
         while loop:
             try:
-                print("ImageClassifier: entered")
+                #print("ImageClassifier: entered")
                 message = self.aws_utils.receive_message_from_request_queue()
                 if message == None:
                     continue
-                print("***message***",message)
+                #print("***message***",message)
                 image_name = message['Body'].split(':',1)[0]
                 image_data = base64.b64decode(message['Body'].split(':',1)[1])
 
@@ -39,7 +39,7 @@ class ImageClassifier:
                     'image_name': image_name,
                     'recognition_result': recognition_result
                 }
-                print(response_body)
+                #print(response_body)
                 self.aws_utils.upload_to_response_s3(recognition_result,image_data)
                 msg = image_name + ':' + response_body["recognition_result"]
                 self.aws_utils.send_message_to_response_queue(msg)
@@ -50,8 +50,7 @@ class ImageClassifier:
 
     def get_result(self, image_path):
         try:
-            print("get result entered")
-            print(image_path)
+            #print("get result entered")
             command = f"python3 image_classification.py {image_path}"
             result = subprocess.check_output(command, shell=True)
             return result.decode("utf-8")
