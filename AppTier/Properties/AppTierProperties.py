@@ -2,8 +2,8 @@ class AppTierProperties:
     REQUEST_SQS = "RequestQueue"
     RESPONSE_SQS = "ResponseQueue"
 
-    REQUEST_S3 = "openstack-request"
-    RESPONSE_S3 = "openstack-response"
+    REQUEST_S3 = "infra-bucket1-m3pxpzoyq0kc"
+    RESPONSE_S3 = "infra-bucket2-11ixq7ltu7hkx"
 
     AWS_ACCESS_KEY = ""
     AWS_SECRET_KEY = ""
