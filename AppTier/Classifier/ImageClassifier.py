@@ -23,10 +23,8 @@ class ImageClassifier:
             try:
                 print("ImageClassifier: entered")
                 message = self.aws_utils.receive_message_from_request_queue()
-                # print("***8message***",message)
-                # print("####################################")
-                image_data = base64.b64decode(message['Body'])
-                # decoded_data = image_data
+                print("***message***",message)
+                image_data = base64.b64decode(message['Body'].split(':',1)[1])
 
                 local_image_path = os.path.join(os.getcwd(), 'image.jpg')
                 with open(local_image_path, "wb") as f:
@@ -40,8 +38,7 @@ class ImageClassifier:
                     'image_data': response_image_data_base64,
                     'recognition_result': recognition_result
                 }
-                # print("***********response_image_data:**********",response_image_data)
-                # print("*********response_image_data_base64********",response_image_data_base64)
+
                 self.aws_utils.upload_to_response_s3(response_body["recognition_result"], response_image_data)
                 self.aws_utils.send_message_to_response_queue(response_body["recognition_result"])
                 self.aws_utils.delete_message_from_sqs(message)
