@@ -31,7 +31,7 @@ class ImageClassifier:
                 with open(local_image_path, "wb") as f:
                     f.write(image_data)
 
-                recognition_result = self.get_result(local_image_path)
+                recognition_result = self.get_result(local_image_path).split(',',1)[1]
 
                 #response_image_data = open(local_image_path, 'rb').read()
                 #response_image_data_base64 = base64.b64encode(response_image_data).decode('utf-8')
