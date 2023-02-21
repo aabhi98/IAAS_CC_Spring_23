@@ -42,7 +42,8 @@ class ImageClassifier:
                 print(response_body)
                 self.aws_utils.upload_to_response_s3(recognition_result,image_data)
                 self.aws_utils.send_message_to_response_queue(image_name + ':' + response_body["recognition_result"])
-                self.aws_utils.delete_message_from_sqs(message)
+                msg = image_name + ':' + response_body["recognition_result"]
+                self.aws_utils.delete_message_from_sqs(msg)
             except Exception as e:
                 log.exception("Error in ImageClassifier: {}".format(str(e)))
                 loop = False
