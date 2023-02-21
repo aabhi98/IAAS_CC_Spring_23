@@ -5,8 +5,8 @@ class AppTierProperties:
     REQUEST_S3 = "infra-bucket1-m3pxpzoyq0kc"
     RESPONSE_S3 = "infra-bucket2-11ixq7ltu7hkx"
 
-    AWS_ACCESS_KEY = "AKIARJJGXP3Y42GXDNV3"
-    AWS_SECRET_KEY = "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"
+    AWS_ACCESS_KEY = ""
+    AWS_SECRET_KEY = ""
 
     @property
     def aws_credentials(self):
