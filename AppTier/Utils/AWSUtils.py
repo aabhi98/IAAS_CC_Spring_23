@@ -29,7 +29,7 @@ class AWSUtils:
     def receive_message_from_request_queue(self):
         try:
             queue_url = self.sqs.get_queue_url(QueueName=self.request_queue_name)['QueueUrl']
-            response = self.sqs.receive_message(QueueUrl=queue_url, MaxNumberOfMessages=1, WaitTimeSeconds=20)
+            response = self.sqs.receive_message(QueueUrl=queue_url, MaxNumberOfMessages=1, WaitTimeSeconds=30)
             messages = response.get("Messages", [])
             if not messages:
                 return None

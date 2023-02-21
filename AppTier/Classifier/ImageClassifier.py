@@ -23,6 +23,8 @@ class ImageClassifier:
             try:
                 print("ImageClassifier: entered")
                 message = self.aws_utils.receive_message_from_request_queue()
+                if message == None:
+                    continue
                 print("***message***",message)
                 image_name = message['Body'].split(':',1)[0]
                 image_data = base64.b64decode(message['Body'].split(':',1)[1])
@@ -33,8 +35,6 @@ class ImageClassifier:
 
                 recognition_result = self.get_result(local_image_path).split(',',1)[1]
 
-                #response_image_data = open(local_image_path, 'rb').read()
-                #response_image_data_base64 = base64.b64encode(response_image_data).decode('utf-8')
                 response_body = {
                     'image_name': image_name,
                     'recognition_result': recognition_result
