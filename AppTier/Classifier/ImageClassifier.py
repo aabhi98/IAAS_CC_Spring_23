@@ -26,7 +26,7 @@ class ImageClassifier:
                 print("***message***",message)
                 image_name = message['Body'].split(':',1)[0]
                 image_data = base64.b64decode(message['Body'].split(':',1)[1])
-                
+
                 local_image_path = os.path.join(os.getcwd(), 'image.jpg')
                 with open(local_image_path, "wb") as f:
                     f.write(image_data)
@@ -40,8 +40,8 @@ class ImageClassifier:
                     'recognition_result': recognition_result
                 }
                 print(response_body)
-                self.aws_utils.upload_to_response_s3(image_name + ':' + response_body["recognition_result"])
-                self.aws_utils.send_message_to_response_queue(response_body["recognition_result"])
+                self.aws_utils.upload_to_response_s3(recognition_result,image_data)
+                self.aws_utils.send_message_to_response_queue(image_name + ':' + response_body["recognition_result"])
                 self.aws_utils.delete_message_from_sqs(message)
             except Exception as e:
                 log.exception("Error in ImageClassifier: {}".format(str(e)))
