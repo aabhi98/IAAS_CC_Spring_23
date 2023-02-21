@@ -24,22 +24,23 @@ class ImageClassifier:
                 print("ImageClassifier: entered")
                 message = self.aws_utils.receive_message_from_request_queue()
                 print("***message***",message)
+                image_name = message['Body'].split(':',1)[0]
                 image_data = base64.b64decode(message['Body'].split(':',1)[1])
-
+                
                 local_image_path = os.path.join(os.getcwd(), 'image.jpg')
                 with open(local_image_path, "wb") as f:
                     f.write(image_data)
 
                 recognition_result = self.get_result(local_image_path)
 
-                response_image_data = open(local_image_path, 'rb').read()
-                response_image_data_base64 = base64.b64encode(response_image_data).decode('utf-8')
+                #response_image_data = open(local_image_path, 'rb').read()
+                #response_image_data_base64 = base64.b64encode(response_image_data).decode('utf-8')
                 response_body = {
-                    'image_data': response_image_data_base64,
+                    'image_name': image_name,
                     'recognition_result': recognition_result
                 }
-
-                self.aws_utils.upload_to_response_s3(response_body["recognition_result"], response_image_data)
+                print(response_body)
+                self.aws_utils.upload_to_response_s3(image_name + ':' + response_body["recognition_result"])
                 self.aws_utils.send_message_to_response_queue(response_body["recognition_result"])
                 self.aws_utils.delete_message_from_sqs(message)
             except Exception as e:
