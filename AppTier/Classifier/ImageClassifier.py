@@ -16,10 +16,15 @@ log = logging.getLogger(__name__)
 class ImageClassifier:
     def __init__(self, request_queue_name=None, response_queue_name=None, request_bucket_name=None, response_bucket_name=None):
         self.aws_utils = AWSUtils(request_queue_name, response_queue_name, request_bucket_name, response_bucket_name)
+        signal.signal(signal.SIGINT, self.exit_gracefully)
+        signal.signal(signal.SIGTERM, self.exit_gracefully)
+        self.loop = True
+
+    def exit_gracefully(self):
+        self.loop = False
 
     def start_classifier(self):
-        loop = True
-        while loop:
+        while self.loop:
             try:
                 #print("ImageClassifier: entered")
                 message = self.aws_utils.receive_message_from_request_queue()
@@ -46,7 +51,7 @@ class ImageClassifier:
                 self.aws_utils.delete_message_from_sqs(message)
             except Exception as e:
                 log.exception("Error in ImageClassifier: {}".format(str(e)))
-                loop = False
+                self.loop = False
 
     def get_result(self, image_path):
         try:
