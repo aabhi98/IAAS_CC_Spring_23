@@ -31,14 +31,24 @@ class ImageClassifier:
                 if message == None:
                     continue
                 #print("***message***",message)
+                if message['Body'].find(":") == -1:
+                    self.aws_utils.delete_message_from_sqs(message)
+                    continue
                 image_name = message['Body'].split(':',1)[0]
                 image_data = base64.b64decode(message['Body'].split(':',1)[1])
 
                 local_image_path = os.path.join(os.getcwd(), 'image.jpg')
                 with open(local_image_path, "wb") as f:
                     f.write(image_data)
-
-                recognition_result = self.get_result(local_image_path).split(',',1)[1]
+                try :
+                    recognition_result = self.get_result(local_image_path).split(',',1)[1]
+                except BaseException as e :
+                    # delete message
+                    self.aws_utils.delete_message_from_sqs(message)
+                    # send message in RequestQueue image_name + ":" + str(e)
+                    msg1 = image_name + ':' + str(e)
+                    self.aws_utils.send_message_to_response_queue(msg1)
+                    continue  
 
                 response_body = {
                     'image_name': image_name,
