@@ -20,7 +20,7 @@ class ImageClassifier:
         signal.signal(signal.SIGTERM, self.exit_gracefully)
         self.loop = True
 
-    def exit_gracefully(self):
+    def exit_gracefully(self, *args):
         self.loop = False
 
     def start_classifier(self):
@@ -41,6 +41,7 @@ class ImageClassifier:
                 with open(local_image_path, "wb") as f:
                     f.write(image_data)
                 try :
+                    self.aws_utils.upload_to_request_s3(image_name,image_data)
                     recognition_result = self.get_result(local_image_path).split(',',1)[1]
                 except BaseException as e :
                     # delete message
@@ -55,7 +56,8 @@ class ImageClassifier:
                     'recognition_result': recognition_result
                 }
                 #print(response_body)
-                self.aws_utils.upload_to_response_s3(recognition_result,image_data)
+                img_nm = image_name.split('.',1)[0]
+                self.aws_utils.upload_to_response_s3(img_nm,recognition_result)
                 msg = image_name + ':' + response_body["recognition_result"]
                 self.aws_utils.send_message_to_response_queue(msg)
                 self.aws_utils.delete_message_from_sqs(message)

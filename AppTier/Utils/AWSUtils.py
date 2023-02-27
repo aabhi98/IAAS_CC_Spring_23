@@ -54,9 +54,15 @@ class AWSUtils:
         except ClientError as e:
             logger.exception(f"Error downloading object from Request S3: {e}")
 
-    def upload_to_response_s3(self, object_key: str, content: bytes) -> None:
+    def upload_to_response_s3(self, object_key: str, content: str) -> None:
         try:
             self.s3.put_object(Bucket=self.response_bucket_name, Key=object_key, Body=content)
         except ClientError as e:
             logger.exception(f"Error uploading object to Response S3: {e}")
+
+    def upload_to_request_s3(self, object_key: str, content: bytes) -> None:
+        try:
+            self.s3.put_object(Bucket=self.request_bucket_name, Key=object_key, Body=content)
+        except ClientError as e:
+            logger.exception(f"Error uploading object to request S3: {e}")
 
